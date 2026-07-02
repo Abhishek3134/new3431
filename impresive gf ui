@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Sonali ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe3e3 0%, #ffd1d1 100%);
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(228, 65, 114, 0.15);
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid #fff;
+            transition: all 0.4s ease;
+        }
+
+        .gif-container img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        p {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #yesBtn {
+            background-color: #ff4757;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        #yesBtn:active {
+            transform: scale(0.95);
+        }
+
+        #noBtn {
+            background-color: #f1f2f6;
+            color: #57606f;
+            position: absolute;
+            transition: left 0.1s ease, top 0.1s ease;
+            z-index: 10;
+        }
+
+        /* Success State Details */
+        .success-message {
+            display: none;
+        }
+
+        .success-message h1 {
+            font-size: 2.2rem;
+            color: #ff4757;
+        }
+
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            background-color: #ff4757;
+            display: inline-block;
+            height: 10px;
+            margin: 0 10px;
+            position: relative;
+            top: 0;
+            transform: rotate(-45deg);
+            width: 10px;
+            animation: float 3s linear infinite;
+        }
+
+        .heart:before, .heart:after {
+            content: "";
+            background-color: #ff4757;
+            border-radius: 50%;
+            height: 10px;
+            position: absolute;
+            width: 10px;
+        }
+
+        .heart:before { top: -5px; left: 0; }
+        .heart:after { left: 5px; top: 0; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-45deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hearts" id="heartsContainer"></div>
+
+    <div class="card" id="mainCard">
+        <div class="quiz-interface" id="quizInterface">
+            <div class="gif-container">
+                <img src="https://media.tenor.com/w8m4Z8pGf78AAAAi/cute-bear.gif" alt="Cute Bear">
+            </div>
+            <h1>Sonali, do you love me? ❤️</h1>
+            <p>Think carefully before you answer...</p>
+            
+            <div class="btn-group">
+                <button class="btn" id="yesBtn" onclick="celebrate()">Yes!</button>
+                <button class="btn" id="noBtn">No</button>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <div class="gif-container">
+                <img src="https://media.tenor.com/gU664Zg6yQcAAAAi/milk-and-mocha-bear.gif" alt="Happy Bears">
+            </div>
+            <h1>Yay! I Love You Too! 🥰</h1>
+            <p>You made my day, gorgeous! ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const quizInterface = document.getElementById('quizInterface');
+        const successMessage = document.getElementById('successMessage');
+        const card = document.getElementById('mainCard');
+        const heartsContainer = document.getElementById('heartsContainer');
+
+        // Set initial absolute position styling for the No button container fallback
+        noBtn.style.left = '55%';
+        noBtn.style.top = '0px';
+
+        // Teleport the 'No' button smoothly on Mobile Touch or Mouse Hover
+        function moveNoButton() {
+            // Calculate random boundary inside the screen viewable area, keeping it within reach but away from the finger
+            const padding = 60;
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            // Generate completely new coordinates
+            let randomX = Math.floor(Math.random() * maxX);
+            let randomY = Math.floor(Math.random() * maxY);
+
+            // Make sure it doesn't spawn exactly over the card framework if possible
+            const cardRect = card.getBoundingClientRect();
+            if (randomX > cardRect.left - 50 && randomX < cardRect.right + 50 &&
+                randomY > cardRect.top - 50 && randomY < cardRect.bottom + 50) {
+                randomX = Math.floor(Math.random() * 50); // push to edges
+            }
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevents clicking behavior on mobile screens
+            moveNoButton();
+        });
+
+        // Trigger transition into the beautiful display state
+        function celebrate() {
+            quizInterface.style.display = 'none';
+            successMessage.style.display = 'block';
+            card.style.borderColor = '#ff4757';
+            
+            // Generate romantic floating heart animation particles
+            for (let i = 0; i < 25; i++) {
+                setTimeout(createHeart, i * 150);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 2 + 's';
+            heart.style.opacity = Math.random();
+            const scale = Math.random() * 0.8 + 0.5;
+            heart.style.transform = `scale(${scale}) rotate(-45deg)`;
+            
+            heartsContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
